@@ -1,0 +1,16 @@
+---
+
+awx_docker_pkgs:
+  - python-pip
+  - docker.io
+
+awx_docker_py26_pkgs:
+  - docker-py
+
+awx_docker_py27_pkgs:
+  - docker
+  - docker-compose
+
+awx_docker_py3_pkgs:
+  - docker
+  - docker-compose
