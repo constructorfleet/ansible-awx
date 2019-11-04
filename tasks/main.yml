@@ -1,6 +1,9 @@
 ---
 - name: Assure variables are set
-  include_tasks: network-setup.yml
+  include_tasks: assure_vars.yml
+
+- name: Install required docker pip packages
+  include_tasks: install_packages.yml
 
 - name: Check for existing Postgres data
   stat:
