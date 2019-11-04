@@ -26,6 +26,7 @@ host_port: 8080
 docker_compose_dir: /var/lib/awxcompose
 pg_username: awx
 pg_password: awxpass
+pg_admin_password: postgrespass
 pg_database: awx
 pg_port: 5432
 
@@ -33,5 +34,5 @@ secret_key: awxsecret
 admin_user: admin
 admin_password: password
 
-awx_web_hostname: ansible-tower
-awx_task_hostname: ansible-tower
+awx_web_hostname: awxweb
+awx_task_hostname: awx
