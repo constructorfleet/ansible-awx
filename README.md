@@ -3,8 +3,6 @@
 **This role is part of the [ITC Automated Build Pods Project][]**
   - Installs Ansible AWX service
 
-[TOC]
-
 ## Dependencies
 
 This role can be run stand-alone to set up an AWX server, however it is intended to be used as part of the [ITC Automated Build Pods Project][] which requires additional Ansible roles and configurations.
@@ -127,3 +125,4 @@ MIT
 Created by Alan Janis
 
 [itc automated build pods project]:  https://github.com/ajanis/itc-build-pods.git
+[docker-ansible]: https://github.com/ajanis/docker-ansible.git
