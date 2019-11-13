@@ -1,13 +1,13 @@
 ---
-- name: Create {{ docker_compose_dir }} directory
+- name: Create {{ awx_docker_compose_dir }} directory
   file:
-    path: "{{ docker_compose_dir }}"
+    path: "{{ awx_docker_compose_dir }}"
     state: directory
 
 - name: Create Docker Compose Configuration
   template:
     src: "{{ item }}.j2"
-    dest: "{{ docker_compose_dir }}/{{ item }}"
+    dest: "{{ awx_docker_compose_dir }}/{{ item }}"
     mode: 0600
   with_items:
     - environment.sh
@@ -17,7 +17,7 @@
 
 - name: Render SECRET_KEY file
   copy:
-    content: "{{ secret_key }}"
-    dest: "{{ docker_compose_dir }}/SECRET_KEY"
+    content: "{{ awx_secret_key }}"
+    dest: "{{ awx_docker_compose_dir }}/SECRET_KEY"
     mode: 0600
-  register: awx_secret_key
+  register: awx_secret_key_content

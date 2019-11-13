@@ -3,5 +3,5 @@
 - name: Assure variables are set
   include_tasks: assure_vars.yml
 
-- name: Build config files for AWX services  
+- name: Build config files for AWX services
   import_tasks: config_files.yml
