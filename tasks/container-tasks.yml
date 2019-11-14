@@ -6,3 +6,9 @@
 - name: Update CA trust in awx_task container
   command: docker exec awx '/usr/bin/update-ca-trust'
   #when: (awx_compose_config is defined and awx_compose_config.changed) or (awx_compose_start is defined and awx_compose_start.changed)
+
+- name: Update ansible in awx_task container
+  command: docker exec -t awx "/bin/pip3" "install" "--upgrade" "ansible"
+
+- name: Update ansible in awxweb container
+  command: docker exec -t awxweb "/bin/pip3" "install" "--upgrade" "ansible"
