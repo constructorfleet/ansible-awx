@@ -1,6 +1,6 @@
 ---
 awx_rabbitmq_version: "3.7.4"
-awx_rabbitmq_image: "ansible/awx_rabbitmq:{{rabbitmq_version}}"
+awx_rabbitmq_image: "ansible/awx_rabbitmq:{{ awx_rabbitmq_version }}"
 awx_rabbitmq_default_vhost: "awx"
 awx_rabbitmq_erlang_cookie: "cookiemonster"
 awx_rabbitmq_host: "rabbitmq"
@@ -9,7 +9,7 @@ awx_rabbitmq_user: "guest"
 awx_rabbitmq_password: "guest"
 
 awx_postgresql_version: "10"
-awx_postgresql_image: "postgres:{{postgresql_version}}"
+awx_postgresql_image: "postgres:{{ awx_postgresql_version }}"
 
 
 awx_memcached_image: "memcached"
