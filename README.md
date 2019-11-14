@@ -18,7 +18,7 @@ The AWX installation requires a Docker container runtime environment.  The [Dock
 ### defaults/main.yml
 ```yaml
 awx_rabbitmq_version: "3.7.4"
-awx_rabbitmq_image: "ansible/awx_rabbitmq:{{rabbitmq_version}}"
+awx_rabbitmq_image: "ansible/awx_rabbitmq:{{ awx_rabbitmq_version }}"
 awx_rabbitmq_default_vhost: "awx"
 awx_rabbitmq_erlang_cookie: "cookiemonster"
 awx_rabbitmq_host: "rabbitmq"
@@ -27,7 +27,7 @@ awx_rabbitmq_user: "guest"
 awx_rabbitmq_password: "guest"
 
 awx_postgresql_version: "10"
-awx_postgresql_image: "postgres:{{postgresql_version}}"
+awx_postgresql_image: "postgres:{{ awx_postgresql_version }}"
 
 
 awx_memcached_image: "memcached"
@@ -54,6 +54,7 @@ awx_secret_key: awxsecret
 awx_admin_user: admin
 awx_admin_password: password
 
+awx_web_url: "http://{{ ansible_default_ipv4.address }}:{{ awx_host_port }}"
 awx_web_hostname: awxweb
 awx_task_hostname: awx
 
@@ -62,13 +63,24 @@ awx_task_hostname: awx
 ## Example Playbook
 ```yaml
 - name: "Deploy Foreman Server"
-  hosts: all
+  hosts: buildhost
   remote_user: root
+  vars_files:
+    - vault.yml
   tasks:
+
+    - name: Wait for server to come online
+      wait_for_connection:
+        delay: 60
+        sleep: 10
+        connect_timeout: 5
+        timeout: 900
+
     - include_role:
         name: common
       tags:
         - common
+
     - include_role:
         name: isc_dhcp_server
         public: yes
@@ -78,6 +90,7 @@ awx_task_hostname: awx
       when: foreman_proxy_dhcp
       tags:
         - dhcp
+
     - include_role:
         name: tftp
         public: yes
@@ -87,6 +100,7 @@ awx_task_hostname: awx
       when: foreman_proxy_tftp
       tags:
         - tftp
+
     - include_role:
         name: nginx
         public: yes
@@ -95,6 +109,7 @@ awx_task_hostname: awx
             - nginx
       tags:
         - nginx
+
     - include_role:
         name: awx
         public: yes
@@ -103,6 +118,7 @@ awx_task_hostname: awx
             - awx
       tags:
         - awx
+
     - include_role:
         name: docker
         public: yes
@@ -111,15 +127,17 @@ awx_task_hostname: awx
             - docker
       tags:
         - docker
+
     - include_role:
         name: awx
-        tasks_from: update_ca.yml
+        tasks_from: container-tasks.yml
         public: yes
         apply:
           tags:
             - awx
       tags:
         - awx
+
     - include_role:
         name: foreman
         public: yes
@@ -129,30 +147,15 @@ awx_task_hostname: awx
         - foreman
         - smartproxy
         - customize
-    - include_role:
-        name: foreman
-        public: yes
-        tasks_from: foreman-host-create.yml
-      tags:
-        - never
-        - hostcreate
-    - include_role:
-        name: foreman
-        public: yes
-        tasks_from: foreman-host-cleanup.yml
-      tags:
-        - never
-        - hostcleanup
+
     - include_role:
         name: ansible-project
         public: yes
-        apply:
-          tags:
-            - project
       tags:
         - never
         - project
-
+        - projectimport
+        - projectclone
 ```
 
 ## License
