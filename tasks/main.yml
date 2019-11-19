@@ -1,7 +1,7 @@
 ---
 
 - name: Assure variables are set
-  include_tasks: assertions.yml
+  import_tasks: assertions.yml
 
 - name: Build config files for AWX services
   import_tasks: config-files.yml
