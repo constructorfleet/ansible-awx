@@ -1,11 +1,10 @@
 ---
 
 - name: Check for ca-trust in awxweb container
-  command: docker exec awxweb "stat" "/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt"
+  shell: docker exec awxweb "test" "-f" "/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt"
   register: awx_web_catrust
-
-- debug:
-    msg: awx_web_catrust
+  changed_when: False
+  ignore_errors: yes
 
 - name: Update CA trust in awxweb container
   command: docker exec awxweb '/usr/bin/update-ca-trust'
@@ -16,11 +15,10 @@
   #when: (awx_compose_config is defined and awx_compose_config.changed) or (awx_compose_start is defined and awx_compose_start.changed)
 
 - name: Check for ca-trust in awx container
-  command: docker exec awx "stat" "/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt"
+  shell: docker exec awx "test" "-f" "/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt"
   register: awx_catrust
-
-- debug:
-    msg: awx_catrust
+  changed_when: False
+  ignore_errors: yes
 
 - name: Update CA trust in awx container
   command: docker exec awx '/usr/bin/update-ca-trust'
@@ -31,17 +29,22 @@
 
 
 - name: Check ansible version in awx container
-  shell: docker exec -it awx 'pip3' 'show' 'ansible' | grep -i version | awk '{print $2}'
+  shell: docker exec -t awx '/bin/pip3' 'show' 'ansible' | grep -i version | awk '{print $2}'
   register: awx_ansible_version
+  changed_when: False
+  ignore_errors: yes
 
 - name: Update ansible in awx_task container
-  command: docker exec -t awx '/bin/pip3' 'install' '--updgrade' 'ansible'
-  when: awx_ansible_version|float < 2.9
+  command: docker exec -t awx '/bin/pip3' 'install' '--upgrade' 'ansible'
+  when: awx_ansible_version.stdout|float is version('2.9.0', 'gt')
 
 - name: Check ansible version in awxweb container
-  shell: docker exec -it awxweb 'pip3' 'show' 'ansible' | grep -i version | awk '{print $2}'
+  shell: docker exec -t awxweb '/bin/pip3' 'show' 'ansible' | grep -i version | awk '{print $2}'
   register: awxweb_ansible_version
+  changed_when: False
+  ignore_errors: yes
+
 
 - name: Update ansible in awxweb container
-  command: docker exec -t awxweb '/bin/pip3' 'install' '--updgrade' 'ansible'
-  register: awxweb_ansible_version|float < 2.9
+  command: docker exec -t awxweb '/bin/pip3' 'install' '--upgrade' 'ansible'
+  when: awxweb_ansible_version.stdout|float is version('2.9.0', 'gt')
