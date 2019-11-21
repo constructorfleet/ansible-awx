@@ -1,14 +1,47 @@
 ---
-- name: Update CA trust in awx_web container
+
+- name: Check for ca-trust in awxweb container
+  command: docker exec awxweb "stat" "/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt"
+  register: awx_web_catrust
+
+- debug:
+    msg: awx_web_catrust
+
+- name: Update CA trust in awxweb container
   command: docker exec awxweb '/usr/bin/update-ca-trust'
+  register: awx_web_catrust_update
+  when:
+    - awx_web_catrust is failed
+
   #when: (awx_compose_config is defined and awx_compose_config.changed) or (awx_compose_start is defined and awx_compose_start.changed)
 
-- name: Update CA trust in awx_task container
+- name: Check for ca-trust in awx container
+  command: docker exec awx "stat" "/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt"
+  register: awx_catrust
+
+- debug:
+    msg: awx_catrust
+
+- name: Update CA trust in awx container
   command: docker exec awx '/usr/bin/update-ca-trust'
+  register: awx_catrust_update
+  when:
+    - awx_catrust is failed
   #when: (awx_compose_config is defined and awx_compose_config.changed) or (awx_compose_start is defined and awx_compose_start.changed)
+
+
+- name: Check ansible version in awx container
+  shell: docker exec -it awx 'pip3' 'show' 'ansible' | grep -i version | awk '{print $2}'
+  register: awx_ansible_version
 
 - name: Update ansible in awx_task container
-  command: docker exec -t awx "/bin/pip3" "install" "--upgrade" "ansible"
+  command: docker exec -t awx '/bin/pip3' 'install' '--updgrade' 'ansible'
+  when: awx_ansible_version|float < 2.9
+
+- name: Check ansible version in awxweb container
+  shell: docker exec -it awxweb 'pip3' 'show' 'ansible' | grep -i version | awk '{print $2}'
+  register: awxweb_ansible_version
 
 - name: Update ansible in awxweb container
-  command: docker exec -t awxweb "/bin/pip3" "install" "--upgrade" "ansible"
+  command: docker exec -t awxweb '/bin/pip3' 'install' '--updgrade' 'ansible'
+  register: awxweb_ansible_version|float < 2.9
