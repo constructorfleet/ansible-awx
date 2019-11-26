@@ -34,9 +34,11 @@
   changed_when: False
   ignore_errors: yes
 
+- debug:
+    msg: "{{ awx_ansible_version.stdout }}"
 - name: Update ansible in awx_task container
   command: docker exec -t awx '/bin/pip3' 'install' '--upgrade' 'ansible'
-  when: awx_ansible_version.stdout|float is version('2.9.0', 'gt')
+  when: awx_ansible_version.stdout is version('2.9.0', '<')
 
 - name: Check ansible version in awxweb container
   shell: docker exec -t awxweb '/bin/pip3' 'show' 'ansible' | grep -i version | awk '{print $2}'
@@ -47,4 +49,4 @@
 
 - name: Update ansible in awxweb container
   command: docker exec -t awxweb '/bin/pip3' 'install' '--upgrade' 'ansible'
-  when: awxweb_ansible_version.stdout|float is version('2.9.0', 'gt')
+  when: awxweb_ansible_version.stdout is version('2.9.0', '<')
