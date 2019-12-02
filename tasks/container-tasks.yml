@@ -34,9 +34,10 @@
   changed_when: False
   ignore_errors: yes
 
-- debug:
-    msg: "{{ awx_ansible_version.stdout }}"
-- name: Update ansible in awx_task container
+#- debug:
+#    msg: "{{ awx_ansible_version.stdout }}"
+
+- name: Update ansible in awx container
   command: docker exec -t awx '/bin/pip3' 'install' '--upgrade' 'ansible'
   when: awx_ansible_version.stdout is version('2.9.0', '<')
 
@@ -50,3 +51,21 @@
 - name: Update ansible in awxweb container
   command: docker exec -t awxweb '/bin/pip3' 'install' '--upgrade' 'ansible'
   when: awxweb_ansible_version.stdout is version('2.9.0', '<')
+
+
+- name: Update ansible in awxweb container
+  command: docker exec -t awxweb '/bin/pip3' 'install' '--upgrade' 'ansible'
+  when: awxweb_ansible_version.stdout is version('2.9.0', '<')
+
+- name: Check for python requests in awx container
+  shell: docker exec -t awx '/bin/pip3' 'show' 'requests'
+  register: awx_requests_present
+  changed_when: False
+  ignore_errors: yes
+
+#- debug:
+#    msg: "{{ awx_ansible_version.stdout }}"
+
+- name: Install python requests in awx container
+  command: docker exec -t awx '/bin/pip3' 'install' 'requests'
+  when: awx_requests_present is failed
