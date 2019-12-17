@@ -57,22 +57,24 @@
   command: docker exec -t awxweb '/bin/pip3' 'install' '--upgrade' 'ansible'
   when: awxweb_ansible_version.stdout is version('2.9.0', '<')
 
-- name: Check for python requests in awx container
-  shell: docker exec -t awx '/bin/pip3' 'show' 'requests'
+- name: Check for python packages in awx container
+  shell: docker exec -t awx '/bin/pip3' 'show' '{{ item }}'
   register: awx_requests_present
   changed_when: False
   ignore_errors: yes
+  loop: "{{ awx_container_python_pkgs }}"
 
-- name: Install python requests in awx container
-  command: docker exec -t awx '/bin/pip3' 'install' 'requests'
-  when: awx_requests_present is failed
+- name: Install python packages in awx container
+  command: docker exec -t awx '/bin/pip3' 'install' '{{ item.item }}'
+  when: item.failed
+  loop: "{{ awx_requests_present.results }}"
 
-- name: Check for python redis in awx container
-  shell: docker exec -t awx '/bin/pip3' 'show' 'redis'
-  register: awx_redis_present
-  changed_when: False
-  ignore_errors: yes
-
-- name: Install python redis in awx container
-  command: docker exec -t awx '/bin/pip3' 'install' 'redis'
-  when: awx_redis_present is failed
+#- name: Check for python redis in awx container
+#  shell: docker exec -t awx '/bin/pip3' 'show' 'redis'
+#  register: awx_redis_present
+#  changed_when: False
+#  ignore_errors: yes
+#
+#- name: Install python redis in awx container
+#  command: docker exec -t awx '/bin/pip3' 'install' 'redis'
+#  when: awx_redis_present is failed
