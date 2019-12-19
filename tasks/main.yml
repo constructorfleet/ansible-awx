@@ -5,3 +5,9 @@
 
 - name: Build config files for AWX services
   import_tasks: config-files.yml
+
+- name: Run docker exec container tasks
+  import_tasks: container-tasks.yml
+  tags:
+    - never
+    - awx-container-tasks
