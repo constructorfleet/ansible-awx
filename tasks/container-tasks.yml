@@ -34,12 +34,18 @@
   changed_when: False
   ignore_errors: yes
 
+- name: Check ansible available version in awx container
+  shell: docker exec -t awx '/bin/pip3' 'search' 'ansible' |  perl -n -e'/^ansible\s\((.*)\)/ && print $1'
+  register: awx_ansible_avail_version
+  changed_when: False
+  ignore_errors: yes
+
 #- debug:
-#    msg: "{{ awx_ansible_version.stdout }}"
+#    msg: "{{ awx_ansible_version.stdout }} {{ awx_ansible_avail_version.stdout }}"
 
 - name: Update ansible in awx container
   command: docker exec -t awx '/bin/pip3' 'install' '--upgrade' 'ansible'
-  when: awx_ansible_version.stdout is version('2.9.0', '<')
+  when: awx_ansible_version.stdout is version(awx_ansible_avail_version.stdout, '<')
 
 - name: Check ansible version in awxweb container
   shell: docker exec -t awxweb '/bin/pip3' 'show' 'ansible' | grep -i version | awk '{print $2}'
@@ -47,15 +53,18 @@
   changed_when: False
   ignore_errors: yes
 
+- name: Check ansible available version in awxweb container
+  shell: docker exec -t awxweb '/bin/pip3' 'search' 'ansible' |  perl -n -e'/^ansible\s\((.*)\)/ && print $1'
+  register: awxweb_ansible_avail_version
+  changed_when: False
+  ignore_errors: yes
+
+#- debug:
+#    msg: "{{ awxweb_ansible_version.stdout }} {{ awxweb_ansible_avail_version.stdout }}"
 
 - name: Update ansible in awxweb container
   command: docker exec -t awxweb '/bin/pip3' 'install' '--upgrade' 'ansible'
-  when: awxweb_ansible_version.stdout is version('2.9.0', '<')
-
-
-- name: Update ansible in awxweb container
-  command: docker exec -t awxweb '/bin/pip3' 'install' '--upgrade' 'ansible'
-  when: awxweb_ansible_version.stdout is version('2.9.0', '<')
+  when: awxweb_ansible_version.stdout is version(awxweb_ansible_avail_version.stdout, '<')
 
 - name: Check for python packages in awx container
   shell: docker exec -t awx '/bin/pip3' 'show' '{{ item }}'
