@@ -45,3 +45,4 @@ awx_container_python_pkgs:
   - requests
   - netaddr
   - passlib
+  - python-hpilo
