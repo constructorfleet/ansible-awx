@@ -46,3 +46,4 @@ awx_container_python_pkgs:
   - netaddr
   - passlib
   - python-hpilo
+  - ansible-tower-cli
