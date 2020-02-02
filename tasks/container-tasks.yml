@@ -1,92 +1,103 @@
 ---
 
-- name: Check for ca-trust in awx_web_1 container
-  shell: docker exec awx_web_1 "test" "-f" "/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt"
-  register: awx_web_catrust
-  changed_when: False
-  ignore_errors: yes
+- name: Check for awx_web_1 and awx_task_1 containers
+  shell: docker ps | egrep "awx_(web|task)_1" | wc -l
+  register: awx_container_count
 
-- name: Update CA trust in awx_web_1 container
-  command: docker exec awx_web_1 '/usr/bin/update-ca-trust'
-  register: awx_web_catrust_update
-  when:
-    - awx_web_catrust is failed
+- set_fact:
+    awx_containers_running: True
+  when: awx_container_count.stdout == "2"
 
-  #when: (awx_compose_config is defined and awx_compose_config.changed) or (awx_compose_start is defined and awx_compose_start.changed)
+- name: Run AWX Container Tasks
+  block:
+    - name: Check for ca-trust in awx_web_1 container
+      shell: docker exec awx_web_1 "test" "-f" "/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt"
+      register: awx_web_catrust
+      changed_when: False
+      ignore_errors: yes
 
-- name: Check for ca-trust in awx container
-  shell: docker exec awx_task_1 "test" "-f" "/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt"
-  register: awx_catrust
-  changed_when: False
-  ignore_errors: yes
+    - name: Update CA trust in awx_web_1 container
+      command: docker exec awx_web_1 '/usr/bin/update-ca-trust'
+      register: awx_web_catrust_update
+      when:
+        - awx_web_catrust is failed
 
-- name: Update CA trust in awx container
-  command: docker exec awx_task_1 '/usr/bin/update-ca-trust'
-  register: awx_catrust_update
-  when:
-    - awx_catrust is failed
-  #when: (awx_compose_config is defined and awx_compose_config.changed) or (awx_compose_start is defined and awx_compose_start.changed)
+      #when: (awx_compose_config is defined and awx_compose_config.changed) or (awx_compose_start is defined and awx_compose_start.changed)
 
+    - name: Check for ca-trust in awx container
+      shell: docker exec awx_task_1 "test" "-f" "/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt"
+      register: awx_catrust
+      changed_when: False
+      ignore_errors: yes
 
-- name: Check ansible version in awx container
-  shell: docker exec -t awx_task_1 '/bin/pip3' 'show' 'ansible' | grep -i version | awk '{print $2}'
-  register: awx_ansible_version
-  changed_when: False
-  ignore_errors: yes
-
-- name: Check ansible available version in awx container
-  shell: docker exec -t awx_task_1 '/bin/pip3' 'search' 'ansible' |  perl -n -e'/^ansible\s\((.*)\)/ && print $1'
-  register: awx_ansible_avail_version
-  changed_when: False
-  ignore_errors: yes
-
-#- debug:
-#    msg: "{{ awx_ansible_version.stdout }} {{ awx_ansible_avail_version.stdout }}"
-
-- name: Update ansible in awx container
-  command: docker exec -t awx_task_1 '/bin/pip3' 'install' '--upgrade' 'ansible'
-  when: awx_ansible_version.stdout is version(awx_ansible_avail_version.stdout, '<')
-
-- name: Check ansible version in awx_web_1 container
-  shell: docker exec -t awx_web_1 '/bin/pip3' 'show' 'ansible' | grep -i version | awk '{print $2}'
-  register: awx_web_1_ansible_version
-  changed_when: False
-  ignore_errors: yes
-
-- name: Check ansible available version in awx_web_1 container
-  shell: docker exec -t awx_web_1 '/bin/pip3' 'search' 'ansible' |  perl -n -e'/^ansible\s\((.*)\)/ && print $1'
-  register: awx_web_1_ansible_avail_version
-  changed_when: False
-  ignore_errors: yes
-
-#- debug:
-#    msg: "{{ awx_web_1_ansible_version.stdout }} {{ awx_web_1_ansible_avail_version.stdout }}"
-
-- name: Update ansible in awx_web_1 container
-  command: docker exec -t awx_web_1 '/bin/pip3' 'install' '--upgrade' 'ansible'
-  when: awx_web_1_ansible_version.stdout is version(awx_web_1_ansible_avail_version.stdout, '<')
-
-- name: Check for python packages in awx container
-  shell: docker exec -t awx_task_1 '/bin/pip3' 'show' '{{ item }}'
-  register: awx_requests_present
-  changed_when: False
-  ignore_errors: yes
-  loop: "{{ awx_container_python_pkgs }}"
-
-- name: Install python packages in awx container
-  command: docker exec -t awx_task_1 '/bin/pip3' 'install' '{{ item.item }}'
-  when: item.failed
-  loop: "{{ awx_requests_present.results }}"
+    - name: Update CA trust in awx container
+      command: docker exec awx_task_1 '/usr/bin/update-ca-trust'
+      register: awx_catrust_update
+      when:
+        - awx_catrust is failed
+      #when: (awx_compose_config is defined and awx_compose_config.changed) or (awx_compose_start is defined and awx_compose_start.changed)
 
 
-- name: Check for python packages in awx_web_1 container
-  shell: docker exec -t awx_web_1 '/bin/pip3' 'show' '{{ item }}'
-  register: awx_web_1_requests_present
-  changed_when: False
-  ignore_errors: yes
-  loop: "{{ awx_container_python_pkgs }}"
+    - name: Check ansible version in awx container
+      shell: docker exec -t awx_task_1 '/bin/pip3' 'show' 'ansible' | grep -i version | awk '{print $2}'
+      register: awx_ansible_version
+      changed_when: False
+      ignore_errors: yes
 
-- name: Install python packages in awx_web_1 container
-  command: docker exec -t awx_web_1 '/bin/pip3' 'install' '{{ item.item }}'
-  when: item.failed
-  loop: "{{ awx_web_1_requests_present.results }}"
+    - name: Check ansible available version in awx container
+      shell: docker exec -t awx_task_1 '/bin/pip3' 'search' 'ansible' |  perl -n -e'/^ansible\s\((.*)\)/ && print $1'
+      register: awx_ansible_avail_version
+      changed_when: False
+      ignore_errors: yes
+
+    #- debug:
+    #    msg: "{{ awx_ansible_version.stdout }} {{ awx_ansible_avail_version.stdout }}"
+
+    - name: Update ansible in awx container
+      command: docker exec -t awx_task_1 '/bin/pip3' 'install' '--upgrade' 'ansible'
+      when: awx_ansible_version.stdout is version(awx_ansible_avail_version.stdout, '<')
+
+    - name: Check ansible version in awx_web_1 container
+      shell: docker exec -t awx_web_1 '/bin/pip3' 'show' 'ansible' | grep -i version | awk '{print $2}'
+      register: awx_web_1_ansible_version
+      changed_when: False
+      ignore_errors: yes
+
+    - name: Check ansible available version in awx_web_1 container
+      shell: docker exec -t awx_web_1 '/bin/pip3' 'search' 'ansible' |  perl -n -e'/^ansible\s\((.*)\)/ && print $1'
+      register: awx_web_1_ansible_avail_version
+      changed_when: False
+      ignore_errors: yes
+
+    #- debug:
+    #    msg: "{{ awx_web_1_ansible_version.stdout }} {{ awx_web_1_ansible_avail_version.stdout }}"
+
+    - name: Update ansible in awx_web_1 container
+      command: docker exec -t awx_web_1 '/bin/pip3' 'install' '--upgrade' 'ansible'
+      when: awx_web_1_ansible_version.stdout is version(awx_web_1_ansible_avail_version.stdout, '<')
+
+    - name: Check for python packages in awx container
+      shell: docker exec -t awx_task_1 '/bin/pip3' 'show' '{{ item }}'
+      register: awx_requests_present
+      changed_when: False
+      ignore_errors: yes
+      loop: "{{ awx_container_python_pkgs }}"
+
+    - name: Install python packages in awx container
+      command: docker exec -t awx_task_1 '/bin/pip3' 'install' '{{ item.item }}'
+      when: item.failed
+      loop: "{{ awx_requests_present.results }}"
+
+
+    - name: Check for python packages in awx_web_1 container
+      shell: docker exec -t awx_web_1 '/bin/pip3' 'show' '{{ item }}'
+      register: awx_web_1_requests_present
+      changed_when: False
+      ignore_errors: yes
+      loop: "{{ awx_container_python_pkgs }}"
+
+    - name: Install python packages in awx_web_1 container
+      command: docker exec -t awx_web_1 '/bin/pip3' 'install' '{{ item.item }}'
+      when: item.failed
+      loop: "{{ awx_web_1_requests_present.results }}"
+  when: awx_containers_running
