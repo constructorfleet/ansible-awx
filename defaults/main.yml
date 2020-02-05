@@ -47,3 +47,9 @@ awx_container_python_pkgs:
   - passlib
   - python-hpilo
   - ansible-tower-cli
+
+awx_allowed_ports:
+  - "80/tcp"    #http
+  - "443/tcp"   #https
+  - "5432/tcp"  #postgresql
+  - "8080/tcp"  #awx

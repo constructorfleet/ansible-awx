@@ -1,4 +1,17 @@
 ---
+- name: "Disable SELinux, Configure FirewallD ports to ACCEPT [RHEL/CentOS]"
+  block:
+    - name: Disable SELinux
+      selinux:
+        state: disabled
+    - name: Configure Firewalld allowed ports
+      firewalld:
+        port: "{{ item }}"
+        permanent: yes
+        immediate: yes
+        state: enabled
+      loop: "{{ awx_allowed_ports }}"
+  when: ansible_os_family == "RedHat"
 
 - name: Assure variables are set
   import_tasks: assertions.yml
