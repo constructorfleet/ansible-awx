@@ -47,14 +47,17 @@
       changed_when: False
       ignore_errors: yes
 
+    - debug:
+        msg: "{{ awx_ansible_version.stdout }}"
+
     - name: Check ansible available version in awx container
       shell: docker exec -t awx_task_1 '/bin/pip3' 'search' 'ansible' |  perl -n -e'/^ansible\s\((.*)\)/ && print $1'
       register: awx_ansible_avail_version
       changed_when: False
       ignore_errors: yes
 
-    #- debug:
-    #    msg: "{{ awx_ansible_version.stdout }} {{ awx_ansible_avail_version.stdout }}"
+    - debug:
+        msg: "{{ awx_ansible_version.stdout }} {{ awx_ansible_avail_version.stdout }}"
 
     - name: Update ansible in awx container
       command: docker exec -t awx_task_1 '/bin/pip3' 'install' '--upgrade' 'ansible'
