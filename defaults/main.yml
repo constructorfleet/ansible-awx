@@ -53,3 +53,4 @@ awx_allowed_ports:
   - "443/tcp"   #https
   - "5432/tcp"  #postgresql
   - "8080/tcp"  #awx
+  - "6379/tcp"  #redis
