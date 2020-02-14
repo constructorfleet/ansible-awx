@@ -54,3 +54,20 @@ awx_allowed_ports:
   - "5432/tcp"  #postgresql
   - "8080/tcp"  #awx
   #- "6379/tcp"  #redis
+
+awx_notification_email:
+awx_github_deploy_key: "{{ vault_github_deploy_key }}"
+
+awx_config_settings:
+  - name: SESSION_COOKIE_AGE
+    value: 28800
+
+awx_host_config_key: 934CE684-86BB-41A7-8DB3-92FE68BF7CCD
+
+awx_inventories: []
+awx_hosts: []
+awx_groups: []
+awx_credentials: []
+awx_job_templates: []
+awx_projects: []
+awx_inventory_sources: []
