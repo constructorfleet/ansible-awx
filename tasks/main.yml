@@ -24,3 +24,9 @@
   tags:
     - never
     - awx-container-tasks
+
+- name: Run AWX/Tower App Configuration
+  import_tasks: awx-configuration.yml
+  tags:
+    - awx-configuration
+    - never
