@@ -1,19 +1,11 @@
 ---
 
-- set_fact:
-    awx_containers_running: False
-
-- name: Check for awx_web_1 and awx_task_1 containers
-  shell: docker ps | egrep "awx_(web|task)_1" | wc -l
-  register: awx_container_count
-  changed_when: False
-
-- set_fact:
-    awx_containers_running: True
-  when: awx_container_count.stdout == "2"
+- name: Import check for AWX/Tower containers
+  import_tasks: verify-running.yml
 
 - name: Run AWX Container Tasks
   block:
+
     - name: Check for ca-trust in awx_web_1 container
       shell: docker exec awx_web_1 "test" "-f" "/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt"
       register: awx_web_catrust
