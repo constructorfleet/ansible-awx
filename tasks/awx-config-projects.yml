@@ -1,0 +1,34 @@
+---
+- name: Add projects to Tower
+  awx.awx.tower_project:
+    name: "{{ item.name }}"
+    description: "{{ item.description | default(omit) }}"
+    scm_type: "{{ item.scm_type | default(omit) }}"
+    scm_credential: "{{ item.scm_credential | default(omit) }}"
+    scm_clean: "{{ item.scm_clean | default(omit) }}"
+    scm_branch: "{{ item.scm_branch | default(omit) }}"
+    scm_update_on_launch: "{{ item.scm_update_on_launch | default(omit) }}"
+    scm_update_cache_timeout: "{{ item.scm_update_cache_timeout | default(omit) }}"
+    scm_url: "{{ item.scm_url | default(omit) }}"
+    local_path: "{{ item.local_path | default(omit) }}"
+    organization: "{{ item.organization | default('Default') }}"
+    state: "{{ item.state | default('present') }}"
+    validate_certs: no
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
+  loop: "{{ awx_projects }}"
+  register: project_import
+  when:
+    - awx_projects is defined
+    - awx_projects != None
+  changed_when: False
+
+- set_fact:
+    "{{ item.project  | lower | regex_replace('(?:[^\\w]+)', '_') }}_project_directory": "{{ awx_project_data_dir }}/_{{ item.id }}__{{ item.project  | lower | regex_replace('(?:[^\\w]+)', '_') }}"
+    cacheable: yes
+  loop: "{{ project_import.results }}"
+  changed_when: False
+  when:
+    - project_import is defined
+    - item.state != "absent"
