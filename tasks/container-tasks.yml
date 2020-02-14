@@ -2,6 +2,8 @@
 
 - name: Import check for AWX/Tower containers
   import_tasks: verify-running.yml
+  tags:
+    - awx-container-tasks
 
 - name: Run AWX Container Tasks
   block:
@@ -56,3 +58,5 @@
       changed_when: '"installed" in  awxweb_python_upgrade.stdout'
 
   when: awx_containers_running
+  tags:
+    - awx-container-tasks
