@@ -1,0 +1,12 @@
+---
+- set_fact:
+    awx_containers_running: False
+
+- name: Check for awx_web_1 and awx_task_1 containers
+  shell: docker ps | egrep "awx_(web|task)_1" | wc -l
+  register: awx_container_count
+  changed_when: False
+
+- set_fact:
+    awx_containers_running: True
+  when: awx_container_count.stdout == "2"
