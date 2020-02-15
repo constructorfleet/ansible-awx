@@ -1,57 +1,4 @@
 ---
-#- name: get ansible user info
-#  getent:
-#    database: passwd
-#    key: "{{ ansible_user }}"
-#
-#- name: set ansible user home directory
-#  set_fact:
-#    ansible_user_homedir: "{{ getent_passwd[ansible_user][4] }}"
-#
-#- name: Create ansible user ssh directory
-#  file:
-#    path: "{{ ansible_user_homedir }}/.ssh"
-#    state: directory
-#    owner: root
-#    mode: 0600
-#
-#- name: Copy ansible user ssh config
-#  copy:
-#    owner: root
-#    mode: 0755
-#    dest: "{{ ansible_user_homedir }}/.ssh/config"
-#    content: |
-#      StrictHostKeyChecking no
-#      UserKnownHostsFile /dev/null
-#
-#- name: Copy github checkout key to server
-#  copy:
-#    mode: 0600
-#    owner: root
-#    content: "{{ github_deploy_key }}"
-#    dest: "{{ ansible_user_homedir }}/.ssh/id_rsa"
-
-#- name: Check out default ansible project
-#  git:
-#    repo:  "{{ ansible_hostbuild_project }}"
-#    dest: "{{ awx_project_data_dir }}/hostbuild"
-#    key_file: "{{ ansible_user_homedir }}/.ssh/id_rsa"
-#  tags:
-#    - projectclone
-#
-#- name: Install required ansible modules
-#  command: ansible-galaxy install -r requirements.yml -p .
-#  args:
-#    chdir: "{{ awx_project_data_dir }}/hostbuild/roles"
-#  tags:
-#    - projectclone
-#
-#- name: Install required ansible collections
-#  command: ansible-galaxy collection install -r requirements.yml -p .
-#  args:
-#    chdir: "{{ awx_project_data_dir }}/hostbuild/collections"
-#  tags:
-#    - projectclone
 
 - name: Update Tower Settings
   awx.awx.tower_settings:
@@ -65,6 +12,7 @@
   when:
     - awx_config_settings is defined
     - awx_config_settings != None
+  changed_when: False
 
 - name: Add email notification
   awx.awx.tower_notification:
