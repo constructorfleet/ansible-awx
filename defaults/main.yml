@@ -71,3 +71,7 @@ awx_credentials: []
 awx_job_templates: []
 awx_projects: []
 awx_inventory_sources: []
+
+awx_pip_pkgs:
+  - ansible
+  - ansible-tower-cli

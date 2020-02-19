@@ -1,3 +1,16 @@
+
+- name: Install Ansible and AWX/Tower Python dependencies
+  pip:
+    name: "{{ awx_pip_pkgs }}"
+    state: present
+  tags:
+    - awx-settings
+    - awx-credentials
+    - awx-projects
+    - awx-inventories
+    - awx-jobs
+    - awx-configuration
+
 - name: Import checks for AWX/Tower containers
   import_tasks: verify-running.yml
   tags:
