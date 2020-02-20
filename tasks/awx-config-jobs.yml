@@ -7,9 +7,12 @@
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
   register: towerassets
-#
-#- debug:
-#    msg: "{{ towerassets }}"
+
+- debug:
+    msg: "{{ towerassets }}"
+  tags:
+    - never
+    - debug
 
 - name: Create Tower job templates
   awx.awx.tower_job_template:
@@ -173,19 +176,24 @@
 #    - awx_job_templates != None
 
 
-#- name: Export tower jobs
-#  awx.awx.tower_receive:
-#    validate_certs: no
-#    job_template:
-#      - all
-#    tower_host: "{{ awx_web_url }}"
-#    tower_username: "{{ awx_admin_user }}"
-#    tower_password: "{{ awx_admin_password }}"
-#  register: towerjobs
-#
-#- debug:
-#    msg: "{{ towerjobs }}"
+- name: Export tower jobs
+  awx.awx.tower_receive:
+    validate_certs: no
+    job_template:
+      - all
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
+  register: towerjobs
+  tags:
+    - never
+    - debug
 
+- debug:
+    msg: "{{ towerjobs }}"
+  tags:
+    - never
+    - debug
 
 - name: "Set Fact for Job IDs"
   set_fact:
