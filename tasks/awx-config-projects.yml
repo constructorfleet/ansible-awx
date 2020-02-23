@@ -24,11 +24,17 @@
     - awx_projects != None
   changed_when: False
 
-- set_fact:
-    "{{ item.project  | lower | regex_replace('(?:[^\\w]+)', '_') }}_project_directory": "{{ awx_project_data_dir }}/_{{ item.id }}__{{ item.project  | lower | regex_replace('(?:[^\\w]+)', '_') }}"
-    cacheable: yes
-  loop: "{{ project_import.results }}"
-  changed_when: False
-  when:
-    - project_import is defined
-    - item.state != "absent"
+
+#- set_fact:
+#    "{{ item.project  | lower | regex_replace('(?:[^\\w]+)', '_') }}_project_directory":
+#      "{{ awx_project_data_dir }}/_{{ item.id }}__{{ item.project  | lower | regex_replace('(?:[^\\w]+)', '_') }}"
+#    cacheable: yes
+#  loop: "{{ project_import.results }}"
+#  changed_when: False
+#  when:
+#    - project_import is defined
+#    - item.state != "absent"
+#
+#- debug:
+#    var: "{{ item.project  | lower | regex_replace('(?:[^\\w]+)', '_') }}_project_directory"
+#  loop: "{{ project_import.results }}"
