@@ -12,12 +12,18 @@
         state: enabled
       loop: "{{ awx_allowed_ports }}"
   when: ansible_os_family == "RedHat"
-
+  tags:
+    - always
 - name: Assure variables are set
   import_tasks: assertions.yml
+  tags:
+    - always
 
 - name: Build config files for AWX services
   import_tasks: config-files.yml
+  tags:
+    - awx-config-files
+    - awx-container-tasks
 
 - name: Run docker exec container tasks
   import_tasks: container-tasks.yml
