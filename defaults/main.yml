@@ -59,7 +59,7 @@ awx_notification_email:
 awx_github_deploy_key: "{{ vault_github_deploy_key }}"
 
 awx_config_settings:
-  - name: SESSION_COOKIE_AGE
+  - name: "SESSION_COOKIE_AGE"
     value: "28800"
 
 awx_host_config_key: 934CE684-86BB-41A7-8DB3-92FE68BF7CCD
