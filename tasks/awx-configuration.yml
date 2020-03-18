@@ -1,16 +1,3 @@
-
-- name: Install Ansible and AWX/Tower Python dependencies
-  pip:
-    name: "{{ awx_pip_pkgs }}"
-    state: present
-  tags:
-    - awx-settings
-    - awx-credentials
-    - awx-projects
-    - awx-inventories
-    - awx-jobs
-    - awx-configuration
-
 - name: Import checks for AWX/Tower containers
   import_tasks: verify-running.yml
   tags:
@@ -21,32 +8,41 @@
     - awx-jobs
     - awx-configuration
 
-- import_tasks: awx-config-settings.yml
-  tags:
-    - awx-settings
-  when:
-    - awx_containers_running
+- name: Run AWX Container Tasks
+  block:
 
-- import_tasks: awx-config-credentials.yml
-  tags:
-    - awx-credentials
-  when:
-    - awx_containers_running
+    - name: Install Ansible and AWX/Tower Python dependencies
+      pip:
+        name: "{{ awx_pip_pkgs }}"
+        state: present
+      tags:
+        - awx-settings
+        - awx-credentials
+        - awx-projects
+        - awx-inventories
+        - awx-jobs
+        - awx-configuration
 
-- import_tasks: awx-config-projects.yml
-  tags:
-    - awx-projects
-  when:
-    - awx_containers_running
+    - import_tasks: awx-config-settings.yml
+      tags:
+        - awx-settings
 
-- import_tasks: awx-config-inventories.yml
-  tags:
-    - awx-inventories
-  when:
-    - awx_containers_running
+    - import_tasks: awx-config-credentials.yml
+      tags:
+        - awx-credentials
 
-- import_tasks: awx-config-jobs.yml
+    - import_tasks: awx-config-projects.yml
+      tags:
+        - awx-projects
+
+    - import_tasks: awx-config-inventories.yml
+      tags:
+        - awx-inventories
+
+    - import_tasks: awx-config-jobs.yml
+      tags:
+        - awx-jobs
+
+  when: awx_containers_running
   tags:
-    - awx-jobs
-  when:
-    - awx_containers_running
+    - awx-configuration

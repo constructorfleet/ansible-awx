@@ -14,25 +14,9 @@
   when: ansible_os_family == "RedHat"
   tags:
     - always
+
 - name: Assure variables are set
   import_tasks: assertions.yml
-  tags:
-    - always
 
 - name: Build config files for AWX services
   import_tasks: config-files.yml
-  tags:
-    - awx-config-files
-    - awx-container-tasks
-
-- name: Run docker exec container tasks
-  import_tasks: container-tasks.yml
-  tags:
-    - never
-    - awx-container-tasks
-
-- name: Run AWX/Tower App Configuration
-  import_tasks: awx-configuration.yml
-  tags:
-    - awx-configuration
-    - never

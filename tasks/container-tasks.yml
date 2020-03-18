@@ -1,6 +1,5 @@
 ---
-
-- name: Import check for AWX/Tower containers
+- name: Import checks for AWX/Tower containers
   import_tasks: verify-running.yml
   tags:
     - awx-container-tasks
