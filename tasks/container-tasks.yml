@@ -3,7 +3,7 @@
 - name: Import check for AWX/Tower containers
   import_tasks: verify-running.yml
   tags:
-    - awx-container-tasks
+    - awx_container_tasks
 
 - name: Run AWX Container Tasks
   block:
@@ -59,4 +59,4 @@
 
   when: awx_containers_running
   tags:
-    - awx-container-tasks
+    - awx_container_tasks
