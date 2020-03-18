@@ -4,49 +4,49 @@
     name: "{{ awx_pip_pkgs }}"
     state: present
   tags:
-    - awx_settings
-    - awx_credentials
-    - awx_projects
-    - awx_inventories
-    - awx_jobs
-    - awx_configuration
+    - awx-settings
+    - awx-credentials
+    - awx-projects
+    - awx-inventories
+    - awx-jobs
+    - awx-configuration
 
 - name: Import checks for AWX/Tower containers
   import_tasks: verify-running.yml
   tags:
-    - awx_settings
-    - awx_credentials
-    - awx_projects
-    - awx_inventories
-    - awx_jobs
-    - awx_configuration
+    - awx-settings
+    - awx-credentials
+    - awx-projects
+    - awx-inventories
+    - awx-jobs
+    - awx-configuration
 
 - import_tasks: awx-config-settings.yml
   tags:
-    - awx_settings
+    - awx-settings
   when:
     - awx_containers_running
 
 - import_tasks: awx-config-credentials.yml
   tags:
-    - awx_credentials
+    - awx-credentials
   when:
     - awx_containers_running
 
 - import_tasks: awx-config-projects.yml
   tags:
-    - awx_projects
+    - awx-projects
   when:
     - awx_containers_running
 
 - import_tasks: awx-config-inventories.yml
   tags:
-    - awx_inventories
+    - awx-inventories
   when:
     - awx_containers_running
 
 - import_tasks: awx-config-jobs.yml
   tags:
-    - awx_jobs
+    - awx-jobs
   when:
     - awx_containers_running

@@ -22,17 +22,17 @@
 - name: Build config files for AWX services
   import_tasks: config-files.yml
   tags:
-    - awx_config_files
-    - awx_container_tasks
+    - awx-config-files
+    - awx-container-tasks
 
 - name: Run docker exec container tasks
   import_tasks: container-tasks.yml
   tags:
     - never
-    - awx_container_tasks
+    - awx-container-tasks
 
 - name: Run AWX/Tower App Configuration
   import_tasks: awx-configuration.yml
   tags:
-    - awx_configuration
+    - awx-configuration
     - never
