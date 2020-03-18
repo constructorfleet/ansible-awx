@@ -34,5 +34,5 @@
 - name: Run AWX/Tower App Configuration
   import_tasks: awx-configuration.yml
   tags:
-    - awx-configuration
+    - awx_configuration
     - never
