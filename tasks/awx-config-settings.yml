@@ -2,8 +2,8 @@
 
 - name: Update Tower Settings
   awx.awx.tower_settings:
-    name: "{{ item.name }}"
-    value: "{{ item.value }}"
+    name: "{{ item.name|to_json }}"
+    value: "{{ item.value|to_json }}"
     validate_certs: no
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
