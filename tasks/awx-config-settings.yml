@@ -8,7 +8,7 @@
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
-  loop: "{{ awx_config_settings }}"
+  loop: "{{ awx_config_settings | dict2items }}"
   when:
     - awx_config_settings is defined
     - awx_config_settings != None
