@@ -1,18 +1,24 @@
 ---
 
-- name: Update Tower Settings
-  awx.awx.tower_settings:
-    name: "{{ item.name }}"
-    value: "{{ item.value|string }}"
-    validate_certs: no
-    tower_host: "{{ awx_web_url }}"
-    tower_username: "{{ awx_admin_user }}"
-    tower_password: "{{ awx_admin_password }}"
+- name: Update tower settings
+  uri:
+    url: "{{ awx_web_url }}/api/v2/settings/all/"
+    user: "{{ awx_admin_user }}"
+    password: "{{ awx_admin_password }}"
+    method: PATCH
+    body: |
+      {
+      "{{ item.name }}": {{ item.value | to_json }}
+      }
+    force_basic_auth: True
+    body_format: json
+    validate_certs: False
+    return_content: True
   loop: "{{ awx_config_settings }}"
   when:
     - awx_config_settings is defined
     - awx_config_settings != None
-  changed_when: False
+
 
 - name: Add email notification
   awx.awx.tower_notification:
