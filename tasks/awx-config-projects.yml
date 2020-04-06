@@ -24,6 +24,14 @@
     - awx_projects != None
   changed_when: False
 
+- name: Export tower assets to refresh playbook data
+  awx.awx.tower_receive:
+    all: True
+    validate_certs: no
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
+  register: towerassets
 
 #- set_fact:
 #    "{{ item.project  | lower | regex_replace('(?:[^\\w]+)', '_') }}_project_directory":

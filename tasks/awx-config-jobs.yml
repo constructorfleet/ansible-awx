@@ -1,12 +1,12 @@
 ---
-- name: Export tower assets to refresh playbook data
-  awx.awx.tower_receive:
-    all: True
-    validate_certs: no
-    tower_host: "{{ awx_web_url }}"
-    tower_username: "{{ awx_admin_user }}"
-    tower_password: "{{ awx_admin_password }}"
-  register: towerassets
+#- name: Export tower assets to refresh playbook data
+#  awx.awx.tower_receive:
+#    all: True
+#    validate_certs: no
+#    tower_host: "{{ awx_web_url }}"
+#    tower_username: "{{ awx_admin_user }}"
+#    tower_password: "{{ awx_admin_password }}"
+#  register: towerassets
 
 - name: Create Tower job templates
   awx.awx.tower_job_template:
