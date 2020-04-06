@@ -2,11 +2,26 @@
 - set_fact:
     awx_containers_running: False
 
-- name: Check for awx_web_1 and awx_task_1 containers
-  shell: docker ps | egrep "awx_(web|task)_1" | wc -l
-  register: awx_container_count
+#- name: Check for awx_web_1 and awx_task_1 containers
+#  shell: 'docker ps | egrep "({{ awx_task_container_name }}|{{ awx_web_container_name}})" | wc -l'
+#  register: awx_container_count
+#  changed_when: False
+
+- name: "Check for {{ awx_web_container_name }} container"
+  shell: 'docker ps | egrep -q "{{ awx_web_container_name}}"'
+  register: awx_web_container_present
   changed_when: False
+  ignore_errors: True
+
+- name: "Check for {{ awx_task_container_name }} container"
+  shell: 'docker ps | egrep -q "{{ awx_task_container_name }}"'
+  register: awx_task_container_present
+  changed_when: False
+  ignore_errors: True
 
 - set_fact:
     awx_containers_running: True
-  when: awx_container_count.stdout == "2"
+  when:
+    - awx_task_container_present
+    - awx_web_container_present
+#  when: awx_container_count.stdout == "2"
