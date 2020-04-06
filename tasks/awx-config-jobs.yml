@@ -58,7 +58,7 @@
     cacheable: yes
   loop: "{{ template_import.results }}"
   loop_control:
-    label: "{{ item.job_template | lower | regex_replace('(?:[^\\w]+)', '_') }}_job_id: {{ item.id }}"
+    label: "{{ item.job_template }}"
   register: job_template_facts
   when:
     - template_import is defined
