@@ -37,8 +37,12 @@ awx_admin_user: admin
 awx_admin_password: password
 
 awx_web_url: "http://{{ ansible_default_ipv4.address }}:{{ awx_host_port }}"
-awx_web_hostname: awxweb
-awx_task_hostname: awx
+
+awx_task_container_name: "awx-task"
+awx_web_container_name: "awx-web"
+
+awx_web_container_hostname: awxweb
+awx_task_container_hostname: awx
 
 awx_container_python_pkgs:
   - redis
