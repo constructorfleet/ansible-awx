@@ -79,3 +79,8 @@ awx_inventory_sources: []
 awx_pip_pkgs:
   - ansible
   - ansible-tower-cli
+
+awx_email_server:
+awx_email_user:
+awx_email_password:
+awx_notification_email:
