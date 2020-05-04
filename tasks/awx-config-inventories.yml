@@ -12,6 +12,8 @@
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
   loop: "{{ awx_inventory_scripts }}"
+  loop_control:
+    label: "{{ item.name }}"
 
 - name: Create Tower inventories
   awx.awx.tower_inventory:
@@ -26,6 +28,8 @@
     tower_password: "{{ awx_admin_password }}"
     variables: "{{ item.variables | default(omit) }}"
   loop: "{{ awx_inventories }}"
+  loop_control:
+    label: "{{ item.name }}"
   when:
     - awx_inventories is defined
     - awx_inventories != None
@@ -51,6 +55,8 @@
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
   loop: "{{ awx_inventory_sources }}"
+  loop_control:
+    label: "{{ item.name }}"
   when:
     - awx_inventory_sources is defined
     - awx_inventory_sources != None
@@ -68,6 +74,8 @@
     tower_password: "{{ awx_admin_password }}"
     variables: "{{ item.variables | default(omit) }}"
   loop: "{{ awx_hosts }}"
+  loop_control:
+    label: "{{ item.name }}"
   when:
     - awx_hosts is defined
     - awx_hosts != None
@@ -86,6 +94,8 @@
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
   loop: "{{ awx_groups }}"
+  loop_control:
+    label: "{{ item.name }}"
   when:
     - awx_groups is defined
     - awx_groups != None

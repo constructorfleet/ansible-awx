@@ -18,6 +18,8 @@
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
   loop: "{{ awx_projects }}"
+  loop_control:
+    label: "{{ item.name }}"
   register: project_import
   when:
     - awx_projects is defined

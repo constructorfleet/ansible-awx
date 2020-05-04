@@ -15,6 +15,8 @@
     validate_certs: False
     return_content: True
   loop: "{{ awx_config_settings }}"
+  loop_control:
+    label: "{{ item.name }}"
   when:
     - awx_config_settings is defined
     - awx_config_settings != None

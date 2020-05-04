@@ -46,6 +46,8 @@
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
   loop: "{{ awx_job_templates }}"
+  loop_control:
+    label: "{{ item.name }}"
   register: template_import
   when:
     - awx_job_templates is defined
