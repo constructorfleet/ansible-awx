@@ -59,8 +59,6 @@ awx_allowed_ports:
   - "8080/tcp"  #awx
   #- "6379/tcp"  #redis
 
-awx_notification_email:
-awx_github_deploy_key: "{{ vault_github_deploy_key }}"
 
 awx_config_settings: []
 #  - name: "SESSION_COOKIE_AGE"
