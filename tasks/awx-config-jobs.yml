@@ -52,20 +52,29 @@
   when:
     - awx_job_templates is defined
     - awx_job_templates != None
-  changed_when: False
+#  changed_when: False
+
+- debug:
+    msg: "{{ item }}"
+    verbosity: 1
+  loop: "{{ template_import.results }}"
+  when:
+    - template_import is defined
+    - template_import.results != None
+    - item.item.host_config_key is defined
 
 - name: "Set Fact for Job IDs"
   set_fact:
-    "{{ item.job_template | lower | regex_replace('(?:[^\\w]+)', '_') }}_job_id": "{{ item.id }}"
+    "{{ item.item.name | lower | regex_replace('(?:[^\\w]+)', '_') }}_job_id": "{{ item.id }}"
     cacheable: yes
   loop: "{{ template_import.results }}"
   loop_control:
-    label: "{{ item.job_template }}"
+    label: "{{ item.item.name }}"
   register: job_template_facts
   when:
     - template_import is defined
     - template_import.results != None
-    - item.state != "absent"
+    - item.item.host_config_key is defined
 
 - name: 'Set Foreman Global Parameter "host_configure_job_id"'
   command: hammer -r global-parameter set --name  host_configure_job_id --parameter-type integer --value {{ host_configure_job_id }}
