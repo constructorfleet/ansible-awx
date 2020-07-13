@@ -51,6 +51,8 @@ awx_container_python_pkgs:
   - passlib
   - python-hpilo
   - ansible-tower-cli
+  - docker-compose
+  - docker
 
 awx_allowed_ports:
   - "80/tcp"    #http
