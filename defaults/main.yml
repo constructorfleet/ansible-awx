@@ -1,4 +1,5 @@
 ---
+awx_ansible_version: "2.9.11"
 awx_rabbitmq_version: "3.7.4"
 awx_rabbitmq_image: "ansible/awx_rabbitmq:{{ awx_rabbitmq_version }}"
 awx_rabbitmq_default_vhost: "awx"
