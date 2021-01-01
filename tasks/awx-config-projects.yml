@@ -12,6 +12,8 @@
     scm_url: "{{ item.scm_url | default(omit) }}"
     local_path: "{{ item.local_path | default(omit) }}"
     organization: "{{ item.organization | default('Default') }}"
+    webhook_service: "{{ item.webhook_service | default(omit) }}"
+    webhook_credential: "{{ item.webhook_credential | default(omit) }}"
     state: "{{ item.state | default('present') }}"
     validate_certs: no
     tower_host: "{{ awx_web_url }}"
