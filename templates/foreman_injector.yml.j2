@@ -9,11 +9,14 @@ file:
     password = {{ password }}
     ssl_verify = False
     [ansible]
-    group_patterns = ["{app}"]
-    group_prefix =
+    group_patterns = ["{app_param}-{tier_param}-{dc_param}",
+                      "{app_param}-{tier_param}",
+                      "{app_param}",
+                      "{subnet_name}-{provision_method}"]
+    group_prefix = foreman_
     want_facts = True
     want_hostcollections = True
-    rich_params = True
+    rich_params = False
     want_ansible_ssh_host = True
     [cache]
     path = .
