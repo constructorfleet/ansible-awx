@@ -47,6 +47,7 @@ awx_task_container_hostname: awx
 
 awx_container_python_pkgs:
   - redis
+  - setuptools_rust
   - requests
   - netaddr
   - passlib
