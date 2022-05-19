@@ -4,6 +4,8 @@
     - name: Disable SELinux
       ansible.posix.selinux:
         state: disabled
+      ignore_errors: true
+
     - name: Configure Firewalld allowed ports
       ansible.posix.firewalld:
         port: "{{ item }}"
