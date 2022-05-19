@@ -19,9 +19,11 @@
         cmd: yum --disablerepo=epel -y update  ca-certificates
       when: ansible_os_family == 'RedHat'
 
-    - name: Ensure Firewalld is installed.
+    - name: Ensure Firewalld/SELinux-Policy is installed.
       ansible.builtin.package:
-        name: firewalld
+        name:
+          - firewalld
+          - SELinux-policy
         state: present
       when: ansible_os_family == 'RedHat'
 
