@@ -1,6 +1,6 @@
 ---
 - name: Import Tower custom inventory scripts
-  tower_send:
+  ansible.builtin.tower_send:
     assets: |
       asset_type: inventory_script
       description: {{ item.description }}

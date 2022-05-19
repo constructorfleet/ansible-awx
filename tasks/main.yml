@@ -2,10 +2,10 @@
 - name: "Disable SELinux, Configure FirewallD ports to ACCEPT [RHEL/CentOS]"
   block:
     - name: Disable SELinux
-      selinux:
+      ansible.posix.selinux:
         state: disabled
     - name: Configure Firewalld allowed ports
-      firewalld:
+      ansible.posix.firewalld:
         port: "{{ item }}"
         permanent: yes
         immediate: yes
@@ -16,7 +16,7 @@
     - always
 
 - name: Assure variables are set
-  import_tasks: assertions.yml
+  ansible.builtin.import_tasks: assertions.yml
 
 - name: Build config files for AWX services
-  import_tasks: config-files.yml
+  ansible.builtin.import_tasks: config-files.yml

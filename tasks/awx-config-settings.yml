@@ -1,7 +1,7 @@
 ---
 
 - name: Update tower settings
-  uri:
+  ansible.builtin.uri:
     url: "{{ awx_web_url }}/api/v2/settings/all/"
     user: "{{ awx_admin_user }}"
     password: "{{ awx_admin_password }}"

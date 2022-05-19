@@ -1,11 +1,11 @@
 ---
 - name: Create {{ awx_docker_compose_dir }} directory
-  file:
+  ansible.builtin.file:
     path: "{{ awx_docker_compose_dir }}"
     state: directory
 
 - name: Create Docker Compose Configuration
-  template:
+  ansible.builtin.template:
     src: "{{ item }}.j2"
     dest: "{{ awx_docker_compose_dir }}/{{ item }}"
     mode: 0600
@@ -16,7 +16,7 @@
   register: awx_compose_config
 
 - name: Render SECRET_KEY file
-  copy:
+  ansible.builtin.copy:
     content: "{{ awx_secret_key }}"
     dest: "{{ awx_docker_compose_dir }}/SECRET_KEY"
     mode: 0600
