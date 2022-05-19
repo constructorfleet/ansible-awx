@@ -7,8 +7,8 @@
     - name: Configure Firewalld allowed ports
       ansible.posix.firewalld:
         port: "{{ item }}"
-        permanent: yes
-        immediate: yes
+        permanent: true
+        immediate: true
         state: enabled
       loop: "{{ awx_allowed_ports }}"
   when: ansible_os_family == "RedHat"

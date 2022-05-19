@@ -7,7 +7,7 @@
       name: {{ item.name }}
       organization: {{ item.organization|default('Default') }}
       script: {{ lookup('file', item.script)|to_json }}
-    validate_certs: no
+    validate_certs: false
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
@@ -23,9 +23,8 @@
     name: "{{ item.name }}"
     description: "{{ item.description | default(omit) }}"
     organization: "Default"
-    #variables: "{{ item.variables | default(omit) }}"
     state: "{{ item.state | default('present') }}"
-    validate_certs: no
+    validate_certs: false
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
@@ -46,14 +45,14 @@
     source_project: "{{ item.source_project | default(omit) }}"
     source_path: "{{ item.source_path | default(omit) }}"
     source_script: "{{ item.source_script | default(omit) }}"
-    update_on_launch: "{{ item.update_on_launch | default('no') }}"
-    update_on_project_update: "{{ item.update_on_project_update | default('no') }}"
+    update_on_launch: "{{ item.update_on_launch | default(False) }}"
+    update_on_project_update: "{{ item.update_on_project_update | default(False) }}"
     update_cache_timeout: "{{ item.update_cache_timeout | default(omit) }}"
-    overwrite: "{{ item.overwrite | default('no') }}"
-    overwrite_vars: "{{ item.overwrite_vars | default('no') }}"
+    overwrite: "{{ item.overwrite | default(False) }}"
+    overwrite_vars: "{{ item.overwrite_vars | default(False) }}"
     inventory: "{{ item.inventory }}"
     credential: "{{ item.credential | default(omit) }}"
-    validate_certs: no
+    validate_certs: false
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
@@ -69,9 +68,8 @@
     name: "{{ item.name }}"
     description: "{{ item.description | default(omit) }}"
     inventory: "{{ item.inventory }}"
-    #variables: "{{ item.variables | default(omit) }}"
     state: "{{ item.state | default('present') }}"
-    validate_certs: no
+    validate_certs: false
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
@@ -82,7 +80,6 @@
   when:
     - awx_hosts is defined
     - awx_hosts != None
-  #changed_when: False
 
 - name: Add inventory groups to Tower
   awx.awx.tower_group:
@@ -92,7 +89,7 @@
     source: "{{ item.source | default('manual') }}"
     instance_filters: "{{ item.instance_filters | default(omit) }}"
     state: "{{ item.state | default('present') }}"
-    validate_certs: no
+    validate_certs: false
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"

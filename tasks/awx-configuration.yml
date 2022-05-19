@@ -1,3 +1,5 @@
+---
+
 - name: Import checks for AWX/Tower containers
   ansible.builtin.import_tasks: verify-running.yml
   tags:

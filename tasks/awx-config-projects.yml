@@ -15,7 +15,7 @@
     webhook_service: "{{ item.webhook_service | default(omit) }}"
     webhook_credential: "{{ item.webhook_credential | default(omit) }}"
     state: "{{ item.state | default('present') }}"
-    validate_certs: no
+    validate_certs: false
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
@@ -26,27 +26,13 @@
   when:
     - awx_projects is defined
     - awx_projects != None
-  changed_when: False
+  changed_when: false
 
 - name: Export tower assets to refresh playbook data
   awx.awx.tower_receive:
-    all: True
-    validate_certs: no
+    all: true
+    validate_certs: false
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
   register: towerassets
-
-#- set_fact:
-#    "{{ item.project  | lower | regex_replace('(?:[^\\w]+)', '_') }}_project_directory":
-#      "{{ awx_project_data_dir }}/_{{ item.id }}__{{ item.project  | lower | regex_replace('(?:[^\\w]+)', '_') }}"
-#    cacheable: yes
-#  loop: "{{ project_import.results }}"
-#  changed_when: False
-#  when:
-#    - project_import is defined
-#    - item.state != "absent"
-#
-#- debug:
-#    var: "{{ item.project  | lower | regex_replace('(?:[^\\w]+)', '_') }}_project_directory"
-#  loop: "{{ project_import.results }}"

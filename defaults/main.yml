@@ -1,4 +1,5 @@
 ---
+
 awx_ansible_version: "2.9.11"
 awx_rabbitmq_version: "3.7.4"
 awx_rabbitmq_image: "ansible/awx_rabbitmq:{{ awx_rabbitmq_version }}"
@@ -12,7 +13,6 @@ awx_rabbitmq_password: "guest"
 awx_postgresql_version: "10"
 awx_postgresql_image: "postgres:{{ awx_postgresql_version }}"
 
-
 awx_memcached_image: "memcached"
 awx_memcached_version: "alpine"
 awx_memcached_host: "memcached"
@@ -20,7 +20,7 @@ awx_memcached_port: "11211"
 
 awx_dockerhub_base: ansible
 awx_dockerhub_version: 9.0.0
-awx_create_preload_data: True
+awx_create_preload_data: true
 
 awx_project_data_dir: /var/lib/awx
 awx_postgres_data_dir: /var/lib/pgawx
@@ -57,16 +57,12 @@ awx_container_python_pkgs:
   - docker
 
 awx_allowed_ports:
-  - "80/tcp"    #http
-  - "443/tcp"   #https
-  - "5432/tcp"  #postgresql
-  - "8080/tcp"  #awx
-  #- "6379/tcp"  #redis
-
+  - "80/tcp"    # http
+  - "443/tcp"   # https
+  - "5432/tcp"  # postgresql
+  - "8080/tcp"  # awx
 
 awx_config_settings: []
-#  - name: "SESSION_COOKIE_AGE"
-#    value: "28800"
 
 awx_host_config_key: 934CE684-86BB-41A7-8DB3-92FE68BF7CCD
 
