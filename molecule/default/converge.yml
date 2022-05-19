@@ -14,6 +14,11 @@
         cache_valid_time: 600
       when: ansible_os_family == 'Debian'
 
+    - name: Update CA-Certificates
+      ansible.builtin.command:
+        cmd: yum --disablerepo=epel -y update  ca-certificates
+      when: ansible_os_family == 'RedHat'
+
     - name: Ensure Firewalld is installed.
       ansible.builtin.package:
         name: firewalld
