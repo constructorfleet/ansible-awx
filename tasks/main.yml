@@ -1,6 +1,15 @@
 ---
+- name: Assure variables are set
+  ansible.builtin.import_tasks: assertions.yml
+
 - name: "Disable SELinux, Configure FirewallD ports to ACCEPT [RHEL/CentOS]"
   block:
+    - name: Install SELinux-Policy
+      ansible.builtin.package:
+        name: SELinux-policy
+        state: present
+      ignore_errors: true
+
     - name: Disable SELinux
       ansible.posix.selinux:
         state: disabled
@@ -16,9 +25,6 @@
   when: ansible_os_family == "RedHat"
   tags:
     - always
-
-- name: Assure variables are set
-  ansible.builtin.import_tasks: assertions.yml
 
 - name: Build config files for AWX services
   ansible.builtin.import_tasks: config-files.yml
