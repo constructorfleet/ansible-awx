@@ -3,7 +3,7 @@
 galaxy_info:
   author: Alan Janis
   description: Create config files for Ansible AWX/Tower prior to Docker container deployment
-  role_name: role
+  role_name: awx
   namespace: constructorfleet
 
   # If the issue tracker for your role is not on github, uncomment the
