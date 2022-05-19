@@ -1,0 +1,50 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    configure_ssh: false
+    storage_backend: NONE
+    host_is_container: true
+    enable_mdns_reflection: true
+    common_enable_cockpit: true
+  pre_tasks:
+    - name: Update apt cache.
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 600
+      when: ansible_os_family == 'Debian'
+
+    - name: Ensure Firewalld is installed.
+      ansible.builtin.package:
+        name: firewalld
+        state: present
+      when: ansible_os_family == 'RedHat'
+
+    - name: Wait for systemd to complete initialization.  # noqa 303
+      ansible.builtin.command: systemctl is-system-running
+      register: systemctl_status
+      until: >
+        'running' in systemctl_status.stdout or
+        'degraded' in systemctl_status.stdout
+      retries: 30
+      delay: 5
+      when: ansible_service_mgr == 'systemd'
+      changed_when: false
+      failed_when: systemctl_status.rc > 1
+
+    - name: 'Restarting firewalld'
+      ansible.builtin.systemd:
+        name: firewalld
+        state: started
+        enabled: true
+        daemon_reload: true
+      when: ansible_os_family == 'RedHat'
+
+  tasks:
+    - name: Run Docker Role
+      ansible.builtin.include_role:
+        name: docker
+
+    - name: Run role
+      ansible.builtin.include_role:
+        name: constructorfleet.awx
