@@ -1,0 +1,68 @@
+---
+name: Molecule
+on:
+  - push
+  - pull_request
+
+env:
+  CI: true
+
+defaults:
+  run:
+    working-directory: 'constructorfleet.awx'
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v2
+        with:
+          path: 'constructorfleet.awx'
+
+      - name: Set up Python 3.
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Install test dependencies.
+        run: pip3 install yamllint
+
+      - name: Lint code.
+        run: |
+          yamllint -f parsable .
+
+  molecule:
+    name: Molecule
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        py_version:
+          - '3.8'
+          - '3.9'
+        distro:
+          - centos7
+          - centos8
+          - ubuntu2004
+          - ubuntu1804
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v2
+        with:
+          path: 'constructorfleet.awx'
+
+      - name: Set up Python 3.
+        uses: actions/setup-python@v2
+        with:
+          python-version: '${{ matrix.py_version }}'
+
+      - name: Install test dependencies.
+        run: python -m pip install ansible==5.1.0 "molecule[docker]" docker
+
+      - name: Run Molecule tests.
+        run: python -m molecule test
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+          MOLECULE_DISTRO: ${{ matrix.distro }}

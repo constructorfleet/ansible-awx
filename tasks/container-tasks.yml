@@ -1,6 +1,6 @@
 ---
 - name: Import checks for AWX/Tower containers
-  import_tasks: verify-running.yml
+  ansible.builtin.import_tasks: verify-running.yml
   tags:
     - awx-container-tasks
 
@@ -8,61 +8,57 @@
   block:
 
     - name: Check for ca-trust in {{ awx_web_container_name }} container
-      shell: docker exec {{ awx_web_container_name }} "test" "-f" "/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt"
+      ansible.builtin.shell: docker exec {{ awx_web_container_name }} "test" "-f" "/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt"
       register: awx_web_catrust
-      changed_when: False
-      ignore_errors: yes
+      changed_when: false
+      ignore_errors: true
 
     - name: Update CA trust in {{ awx_web_container_name }} container
-      command: docker exec {{ awx_web_container_name }} '/usr/bin/update-ca-trust'
+      ansible.builtin.command: docker exec {{ awx_web_container_name }} '/usr/bin/update-ca-trust'
       register: awx_web_catrust_update
       when:
         - awx_web_catrust is failed
 
     - name: Check for ca-trust in {{ awx_task_container_name }} container
-      shell: docker exec {{ awx_task_container_name }} "test" "-f" "/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt"
+      ansible.builtin.shell: docker exec {{ awx_task_container_name }} "test" "-f" "/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt"
       register: awx_catrust
-      changed_when: False
-      ignore_errors: yes
+      changed_when: false
+      ignore_errors: true
 
     - name: Update CA trust in {{ awx_task_container_name }} container
-      command: docker exec {{ awx_task_container_name }} '/usr/bin/update-ca-trust'
+      ansible.builtin.command: docker exec {{ awx_task_container_name }} '/usr/bin/update-ca-trust'
       register: awx_catrust_update
       when:
         - awx_catrust is failed
 
     - name: Update pip in {{ awx_task_container_name }} container
-      command: docker exec -t {{ awx_task_container_name }} '/bin/python3' '-m' 'pip' 'install' '--upgrade' '-U' 'pip'
+      ansible.builtin.command: docker exec -t {{ awx_task_container_name }} '/bin/python3' '-m' 'pip' 'install' '--upgrade' '-U' 'pip'
       register: awxtask_pip_upgrade
       changed_when: '"installed" in  awxtask_pip_upgrade.stdout'
 
-
     - name: Update pip in {{ awx_web_container_name }} container
-      command: docker exec -t {{ awx_web_container_name }} '/bin/python3' '-m' 'pip' 'install' '--upgrade' '-U' 'pip'
+      ansible.builtin.command: docker exec -t {{ awx_web_container_name }} '/bin/python3' '-m' 'pip' 'install' '--upgrade' '-U' 'pip'
       register: awxweb_pip_upgrade
       changed_when: '"installed" in  awxweb_pip_upgrade.stdout'
 
     - name: Update ansible in {{ awx_task_container_name }} container
-      command: docker exec -t {{ awx_task_container_name }} '/bin/python3' '-m' 'pip' 'install' '--upgrade' 'setuptools_rust' 'ansible=={{ awx_ansible_version }}'
+      ansible.builtin.command: docker exec -t {{ awx_task_container_name }} '/bin/python3' '-m' 'pip' 'install' '--upgrade' 'setuptools_rust' 'ansible=={{ awx_ansible_version }}'
       register: awxtask_ansible_upgrade
       changed_when: '"installed" in  awxtask_ansible_upgrade.stdout'
 
-
     - name: Update ansible in {{ awx_web_container_name }} container
-      command: docker exec -t {{ awx_web_container_name }} '/bin/python3' '-m' 'pip' 'install' '--upgrade' 'setuptools_rust' 'ansible=={{ awx_ansible_version }}'
+      ansible.builtin.command: docker exec -t {{ awx_web_container_name }} '/bin/python3' '-m' 'pip' 'install' '--upgrade' 'setuptools_rust' 'ansible=={{ awx_ansible_version }}'
       register: awxweb_ansible_upgrade
       changed_when: '"installed" in  awxweb_ansible_upgrade.stdout'
 
-
     - name: Install python packages in {{ awx_task_container_name }} container
-      command: docker exec -t {{ awx_task_container_name }} '/bin/python3' '-m' 'pip' 'install' '--upgrade' '{{ item }}'
+      ansible.builtin.command: docker exec -t {{ awx_task_container_name }} '/bin/python3' '-m' 'pip' 'install' '--upgrade' '{{ item }}'
       loop: "{{ awx_container_python_pkgs }}"
       register: awxtask_python_upgrade
       changed_when: '"installed" in  awxtask_python_upgrade.stdout'
 
-
     - name: Install python packages in {{ awx_web_container_name }} container
-      command: docker exec -t {{ awx_web_container_name }} '/bin/python3' '-m' 'pip' 'install' '--upgrade' '{{ item }}'
+      ansible.builtin.command: docker exec -t {{ awx_web_container_name }} '/bin/python3' '-m' 'pip' 'install' '--upgrade' '{{ item }}'
       loop: "{{ awx_container_python_pkgs }}"
       register: awxweb_python_upgrade
       changed_when: '"installed" in  awxweb_python_upgrade.stdout'

@@ -1,5 +1,7 @@
+---
+
 - name: Import checks for AWX/Tower containers
-  import_tasks: verify-running.yml
+  ansible.builtin.import_tasks: verify-running.yml
   tags:
     - awx-settings
     - awx-credentials
@@ -12,7 +14,7 @@
   block:
 
     - name: Install Ansible and AWX/Tower Python dependencies
-      pip:
+      ansible.builtin.pip:
         name: "{{ awx_pip_pkgs }}"
         state: present
       tags:
@@ -23,23 +25,28 @@
         - awx-jobs
         - awx-configuration
 
-    - import_tasks: awx-config-settings.yml
+    - name: Import AWX/Tower settings tasks
+      ansible.builtin.import_tasks: awx-config-settings.yml
       tags:
         - awx-settings
 
-    - import_tasks: awx-config-credentials.yml
+    - name: Import AWX/Tower credential tasks
+      ansible.builtin.import_tasks: awx-config-credentials.yml
       tags:
         - awx-credentials
 
-    - import_tasks: awx-config-projects.yml
+    - name: Import AWX/Tower project tasks
+      ansible.builtin.import_tasks: awx-config-projects.yml
       tags:
         - awx-projects
 
-    - import_tasks: awx-config-inventories.yml
+    - name: Import AWX/Tower inventory tasks
+      ansible.builtin.import_tasks: awx-config-inventories.yml
       tags:
         - awx-inventories
 
-    - import_tasks: awx-config-jobs.yml
+    - name: Import AWX/Tower job tasks
+      ansible.builtin.import_tasks: awx-config-jobs.yml
       tags:
         - awx-jobs
 

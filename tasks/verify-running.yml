@@ -1,21 +1,23 @@
 ---
-- set_fact:
-    awx_containers_running: False
+- name: Clear AWX/Tower flag
+  ansible.builtin.set_fact:
+    awx_containers_running: false
 
 - name: "Check for {{ awx_web_container_name }} container"
-  shell: 'docker ps | egrep -q "{{ awx_web_container_name}}"'
+  ansible.builtin.shell: 'docker ps | egrep -q "{{ awx_web_container_name}}"'
   register: awx_web_container_present
-  changed_when: False
-  ignore_errors: True
+  changed_when: false
+  ignore_errors: true
 
 - name: "Check for {{ awx_task_container_name }} container"
-  shell: 'docker ps | egrep -q "{{ awx_task_container_name }}"'
+  ansible.builtin.shell: 'docker ps | egrep -q "{{ awx_task_container_name }}"'
   register: awx_task_container_present
-  changed_when: False
-  ignore_errors: True
+  changed_when: false
+  ignore_errors: true
 
-- set_fact:
-    awx_containers_running: True
+- name: Set AWX/Tower flag
+  ansible.builtin.set_fact:
+    awx_containers_running: true
   when:
     - awx_task_container_present
     - awx_web_container_present

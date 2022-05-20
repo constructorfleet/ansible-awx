@@ -83,7 +83,7 @@ awx_task_hostname: awx
 
     - include_role:
         name: isc_dhcp_server
-        public: yes
+        public: true
         apply:
           tags:
             - dhcp
@@ -93,7 +93,7 @@ awx_task_hostname: awx
 
     - include_role:
         name: tftp
-        public: yes
+        public: true
         apply:
           tags:
             - tftp
@@ -103,7 +103,7 @@ awx_task_hostname: awx
 
     - include_role:
         name: nginx
-        public: yes
+        public: true
         apply:
           tags:
             - nginx
@@ -112,7 +112,7 @@ awx_task_hostname: awx
 
     - include_role:
         name: awx
-        public: yes
+        public: true
         apply:
           tags:
             - awx
@@ -121,7 +121,7 @@ awx_task_hostname: awx
 
     - include_role:
         name: docker
-        public: yes
+        public: true
         apply:
           tags:
             - docker
@@ -131,7 +131,7 @@ awx_task_hostname: awx
     - include_role:
         name: awx
         tasks_from: container-tasks.yml
-        public: yes
+        public: true
         apply:
           tags:
             - awx
@@ -140,7 +140,7 @@ awx_task_hostname: awx
 
     - include_role:
         name: foreman
-        public: yes
+        public: true
       tags:
         - install
         - configure
@@ -150,7 +150,7 @@ awx_task_hostname: awx
 
     - include_role:
         name: ansible-project
-        public: yes
+        public: true
       tags:
         - never
         - project

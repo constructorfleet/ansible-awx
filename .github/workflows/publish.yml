@@ -1,0 +1,20 @@
+name: Publish Role to Ansible Galaxy
+on:
+  release:
+    types: [ created ]
+jobs:
+  publish:
+    name: Publish to Ansible Galaxy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: "${{ github.repository }}"
+      - name: Publish Ansible role to Galaxy
+        uses: robertdebock/galaxy-action@1.2.0
+        with:
+          galaxy_api_key: ${{ secrets.GALAXY_API_TOKEN }}
+

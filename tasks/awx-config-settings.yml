@@ -1,7 +1,7 @@
 ---
 
 - name: Update tower settings
-  uri:
+  ansible.builtin.uri:
     url: "{{ awx_web_url }}/api/v2/settings/all/"
     user: "{{ awx_admin_user }}"
     password: "{{ awx_admin_password }}"
@@ -10,17 +10,16 @@
       {
       "{{ item.name }}": {{ item.value | to_json }}
       }
-    force_basic_auth: True
+    force_basic_auth: true
     body_format: json
-    validate_certs: False
-    return_content: True
+    validate_certs: false
+    return_content: true
   loop: "{{ awx_config_settings }}"
   loop_control:
     label: "{{ item.name }}"
   when:
     - awx_config_settings is defined
     - awx_config_settings != None
-
 
 - name: Add email notification
   awx.awx.tower_notification:
@@ -33,10 +32,10 @@
       - "{{ awx_notification_email }}"
     host: "{{ awx_email_server }}"
     port: 587
-    use_tls: yes
-    use_ssl: no
+    use_tls: true
+    use_ssl: false
     state: present
-    validate_certs: no
+    validate_certs: false
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
@@ -49,4 +48,4 @@
     - awx_email_password != None
     - awx_email_server is defined
     - awx_email_server != None
-  changed_when: False
+  changed_when: false

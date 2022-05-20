@@ -1,12 +1,4 @@
 ---
-#- name: Export tower assets to refresh playbook data
-#  awx.awx.tower_receive:
-#    all: True
-#    validate_certs: no
-#    tower_host: "{{ awx_web_url }}"
-#    tower_username: "{{ awx_admin_user }}"
-#    tower_password: "{{ awx_admin_password }}"
-#  register: towerassets
 
 - name: Create Tower job templates
   awx.awx.tower_job_template:
@@ -40,8 +32,10 @@
     inventory: "{{ item.inventory | default(omit) }}"
     extra_vars: "{{ item.extra_vars | default(omit) }}"
     credentials: "{{ item.credentials | default(omit) }}"
+    webhook_service: "{{ item.webhook_service | default(omit) }}"
+    webhook_credential: "{{ item.webhook_credential | default(omit) }}"
     state: "{{ item.state | default('present') }}"
-    validate_certs: no
+    validate_certs: false
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
@@ -52,9 +46,10 @@
   when:
     - awx_job_templates is defined
     - awx_job_templates != None
-#  changed_when: False
+#  changed_when: false
 
-- debug:
+- name: Debug import results
+  ansible.builtin.debug:
     msg: "{{ item }}"
     verbosity: 1
   loop: "{{ template_import.results }}"
@@ -64,9 +59,9 @@
     - item.item.host_config_key is defined
 
 - name: "Set Fact for Job IDs"
-  set_fact:
+  ansible.builtin.set_fact:
     "{{ item.item.name | lower | regex_replace('(?:[^\\w]+)', '_') }}_job_id": "{{ item.id }}"
-    cacheable: yes
+    cacheable: true
   loop: "{{ template_import.results }}"
   loop_control:
     label: "{{ item.item.name }}"
@@ -77,8 +72,8 @@
     - item.item.host_config_key is defined
 
 - name: 'Set Foreman Global Parameter "host_configure_job_id"'
-  command: hammer -r global-parameter set --name  host_configure_job_id --parameter-type integer --value {{ host_configure_job_id }}
-  changed_when: False
+  ansible.builtin.command: hammer -r global-parameter set --name  host_configure_job_id --parameter-type integer --value {{ host_configure_job_id }}
+  changed_when: false
   when:
     - host_configure_job_id is defined
     - host_configure_job_id != None
