@@ -7,6 +7,7 @@
     host_is_container: true
     enable_mdns_reflection: true
     common_enable_cockpit: true
+    selinux_state: disabled
   pre_tasks:
     - name: Update apt cache.
       ansible.builtin.apt:
@@ -14,35 +15,24 @@
         cache_valid_time: 600
       when: ansible_os_family == 'Debian'
 
-    - name: Update CA-Certificates
+    - name: Include SELinux role
+      ansible.builtin.include_role:
+        name: linux-system-roles.selinux
+      when: ansible_os_family == 'RedHat'
+
+    - name: Update Yum CA-Certificates
       ansible.builtin.command:
         cmd: yum --disablerepo=epel -y update  ca-certificates
       when: ansible_os_family == 'RedHat'
 
-    - name: Ensure Firewalld/SELinux-Policy is installed.
+    - name: Ensure Firewalld is installed.
       ansible.builtin.yum:
         name:
           - firewalld
-          - SELinux-policy
         state: present
         update_cache: true
       when:
         - ansible_os_family == 'RedHat'
-        - ansible_distribution_major_version != '8'
-
-    - name: Ensure Firewalld/SELinux-Policy is installed.
-      ansible.builtin.yum:
-        name:
-          - firewalld
-          - policycoreutils
-          - setools
-          - setools-console
-          - setroubleshoot
-        state: present
-        update_cache: true
-      when:
-        - ansible_os_family == 'RedHat'
-        - ansible_distribution_major_version == '8'
 
     - name: Wait for systemd to complete initialization.  # noqa 303
       ansible.builtin.command: systemctl is-system-running
