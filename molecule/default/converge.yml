@@ -35,7 +35,6 @@
         name:
           - firewalld
           - policycoreutils
-          - policycoreutils-python
           - setools
           - setools-console
           - setroubleshoot
